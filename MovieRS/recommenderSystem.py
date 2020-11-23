@@ -1,6 +1,7 @@
 import os
 import sys
 import pandas as pd
+from operator import itemgetter
 from scipy.sparse import csr_matrix
 from sklearn.neighbors import NearestNeighbors
 from difflib import get_close_matches
@@ -74,9 +75,7 @@ def inp_loop(movie_user_mat, movies_map):
     return movie
 
 def do_prediction(knn_model, movie_user_mat, movies_map, movie):
-    distances, indices = knn_model.kneighbors(
-            movie,
-            n_neighbors=11)
+    distances, indices = knn_model.kneighbors(movie, n_neighbors=11)
     recommends = \
             sorted(
                 list(
@@ -85,12 +84,13 @@ def do_prediction(knn_model, movie_user_mat, movies_map, movie):
                         distances.squeeze().tolist()
                     )
                 ),
-                key=lambda x: x[1]
-            )[:0:-1]
+                key=itemgetter(1)
+            )
+    recommends.pop(0)
+    recommends.reverse()
     return recommends
 
 if __name__ == "__main__":
-    # read data
     print("Data processing...")
     movies_df, ratings_df = get_dataframes(
         movies_path='./ml-latest/movies.csv',
@@ -100,10 +100,11 @@ if __name__ == "__main__":
     knn_model= createKnnModel(movie_user_mat)
     movie = inp_loop(movie_user_mat, movies_map)
     recommends = do_prediction(knn_model, movie_user_mat, movies_map, movie)
+    print(recommends)
 
     reverse_map = {v: k for k, v in movies_map.items()}
     print('Recommendations :')
-    for i, (idx, dist) in enumerate(recommends):
+    for i, (indice, distance) in enumerate(recommends):
         print('{0}: {1}, with distance '
-                'of {2}'.format(i+1, reverse_map[idx], dist))
+                'of {2}'.format(i+1, reverse_map[indice], distance))
 
