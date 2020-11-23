@@ -3,6 +3,7 @@ import sys
 import pandas as pd
 from scipy.sparse import csr_matrix
 from sklearn.neighbors import NearestNeighbors
+from difflib import get_close_matches
 
 def get_dataframes(movies_path, ratings_path):
     movies_dataframe = pd.read_csv(
@@ -23,7 +24,7 @@ def cleanup_ratings_df(ratings_df):
     users_to_filter = pd.DataFrame(
         ratings_df.groupby('userId').size(),
         columns=['count'])
-    popular_movies = list(set(movies_to_filter.query('count >= 20000').index))
+    popular_movies = list(set(movies_to_filter.query('count >= 6000').index))
     active_users = list(set(users_to_filter.query('count >= 0').index))
     movies_filter = ratings_df.movieId.isin(popular_movies).values
     users_filter = ratings_df.userId.isin(active_users).values
@@ -49,12 +50,18 @@ def createKnnModel(movie_user_mat):
     return knn_model
 
 def get_movie_index(movie_title, movies_map):
+    titles = []
+    indexes = []
+    matches = []
     for title, idx in movies_map.items():
-        if title == movie_title.rstrip("\n"):
-            print('Match found in movie db')
-            return idx
-    print('No match found.')
-    return -1
+        titles.append(title)
+        indexes.append(idx)
+    matches = get_close_matches(movie_title, titles)
+    if len(matches) == 0:
+        print("No match found.")
+        return -1
+    print ("Result found in movie database : {0}".format(matches[0]))
+    return indexes[titles.index(matches[0])]
 
 def inp_loop(movie_user_mat, movies_map):
     index = -1
