@@ -35,12 +35,10 @@ def cleanup_ratings_df(ratings_df):
 def create_matrix_and_map(ratings_df, movies_df):
     movie_user_mat = ratings_df.pivot(
             index='movieId', columns='userId', values='rating').fillna(0)
-    # create mapper from movie title to index
     movies_map = {
         movie: i for i, movie in
         enumerate(list(movies_df.set_index('movieId').loc[movie_user_mat.index].title))
     }
-    # transform matrix to scipy sparse matrix
     movie_user_mat = csr_matrix(movie_user_mat.values)
     return (movie_user_mat, movies_map)
 
@@ -107,4 +105,3 @@ if __name__ == "__main__":
     for i, (indice, distance) in enumerate(recommends):
         print('{0}: {1}, with distance '
                 'of {2}'.format(i+1, reverse_map[indice], distance))
-
