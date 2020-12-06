@@ -98,7 +98,6 @@ if __name__ == "__main__":
     knn_model= createKnnModel(movie_user_mat)
     movie = inp_loop(movie_user_mat, movies_map)
     recommends = do_prediction(knn_model, movie_user_mat, movies_map, movie)
-    print(recommends)
 
     reverse_map = {v: k for k, v in movies_map.items()}
     print('Recommendations :')
