@@ -66,11 +66,7 @@ def get_movie_index(movie_title, movies_map):
 def inp_loop(movie_user_mat, movies_map):
     index = -1
     while (index < 0):
-        sys.stdout.write("Please type a movie title: ")
-        sys.stdout.flush()
-        inp = sys.stdin.readline()
-        if inp == "exit":
-            exit(0)
+        inp = input("Please type a movie title: ")
         index = get_movie_index(inp, movies_map)
         movie = movie_user_mat[index]
     return movie
@@ -108,3 +104,6 @@ if __name__ == "__main__":
         for i, (indice, distance) in enumerate(recommends):
             print('{0}: {1}, with distance '
                     'of {2}'.format(i+1, reverse_map[indice], distance))
+        inp = input("Do you want to exit ?(Y/N)\n")
+        if inp == "Y":
+            exit(0)
