@@ -69,6 +69,8 @@ def inp_loop(movie_user_mat, movies_map):
         sys.stdout.write("Please type a movie title: ")
         sys.stdout.flush()
         inp = sys.stdin.readline()
+        if inp == "exit":
+            exit(0)
         index = get_movie_index(inp, movies_map)
         movie = movie_user_mat[index]
     return movie
@@ -86,7 +88,6 @@ def do_prediction(knn_model, movie):
                 key=itemgetter(1)
             )
     recommends.pop(0)
-    recommends.reverse()
     return recommends
 
 if __name__ == "__main__":
@@ -97,11 +98,13 @@ if __name__ == "__main__":
     ratings_df = cleanup_ratings_df(ratings_df)
     movie_user_mat, movies_map = create_matrix_and_map(ratings_df, movies_df)
     knn_model= createKnnModel(movie_user_mat)
-    movie = inp_loop(movie_user_mat, movies_map)
-    recommends = do_prediction(knn_model, movie)
 
-    reverse_map = {v: k for k, v in movies_map.items()}
-    print('Recommendations :')
-    for i, (indice, distance) in enumerate(recommends):
-        print('{0}: {1}, with distance '
-                'of {2}'.format(i+1, reverse_map[indice], distance))
+    while True:
+        movie = inp_loop(movie_user_mat, movies_map)
+        recommends = do_prediction(knn_model, movie)
+
+        reverse_map = {v: k for k, v in movies_map.items()}
+        print('Recommendations :')
+        for i, (indice, distance) in enumerate(recommends):
+            print('{0}: {1}, with distance '
+                    'of {2}'.format(i+1, reverse_map[indice], distance))
