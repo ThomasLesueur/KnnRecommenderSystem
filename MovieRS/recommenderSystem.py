@@ -40,6 +40,7 @@ def create_matrix_and_map(ratings_df, movies_df):
         enumerate(list(movies_df.set_index('movieId').loc[movie_user_mat.index].title))
     }
     movie_user_mat = csr_matrix(movie_user_mat.values)
+
     return (movie_user_mat, movies_map)
 
 def createKnnModel(movie_user_mat):
@@ -72,7 +73,7 @@ def inp_loop(movie_user_mat, movies_map):
         movie = movie_user_mat[index]
     return movie
 
-def do_prediction(knn_model, movie_user_mat, movies_map, movie):
+def do_prediction(knn_model, movie):
     distances, indices = knn_model.kneighbors(movie, n_neighbors=11)
     recommends = \
             sorted(
@@ -97,7 +98,7 @@ if __name__ == "__main__":
     movie_user_mat, movies_map = create_matrix_and_map(ratings_df, movies_df)
     knn_model= createKnnModel(movie_user_mat)
     movie = inp_loop(movie_user_mat, movies_map)
-    recommends = do_prediction(knn_model, movie_user_mat, movies_map, movie)
+    recommends = do_prediction(knn_model, movie)
 
     reverse_map = {v: k for k, v in movies_map.items()}
     print('Recommendations :')
