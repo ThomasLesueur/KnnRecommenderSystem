@@ -44,7 +44,7 @@ def create_matrix_and_map(ratings_df, movies_df):
     return (movie_user_mat, movies_map)
 
 def createKnnModel(movie_user_mat):
-    knn_model = model_knn = NearestNeighbors(metric='cosine', algorithm='brute', n_neighbors=10, n_jobs=-1)
+    knn_model = NearestNeighbors(metric='cosine', algorithm='brute', n_neighbors=10, n_jobs=-1)
 
     knn_model.fit(movie_user_mat)
     return knn_model
