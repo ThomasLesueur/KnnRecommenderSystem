@@ -26,7 +26,7 @@ def cleanup_ratings_df(ratings_df):
         ratings_df.groupby('userId').size(),
         columns=['count'])
     popular_movies = list(set(movies_to_filter.query('count >= 6000').index))
-    active_users = list(set(users_to_filter.query('count >= 0').index))
+    active_users = list(set(users_to_filter.query('count >= 10').index))
     movies_filter = ratings_df.movieId.isin(popular_movies).values
     users_filter = ratings_df.userId.isin(active_users).values
     ratings_filtered_df = ratings_df[movies_filter & users_filter]
